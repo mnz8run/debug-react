@@ -7,7 +7,7 @@ scripts/flow/*/.flowconfig
 .grunt
 _SpecRunner.html
 __benchmarks__
-build/
+build/*
 remote-repo/
 coverage/
 .module-cache
@@ -36,3 +36,9 @@ packages/react-devtools-extensions/.tempUserDataDir
 packages/react-devtools-inline/dist
 packages/react-devtools-shell/dist
 packages/react-devtools-timeline/dist
+
+!build/weiyi
+build/weiyi/*
+!build/weiyi/react
+!build/weiyi/react-dom
+!build/weiyi/scheduler
