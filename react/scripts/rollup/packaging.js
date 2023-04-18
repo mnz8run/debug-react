@@ -45,17 +45,17 @@ function getPackageName(name) {
 function getBundleOutputPath(bundleType, filename, packageName) {
   switch (bundleType) {
     case NODE_ES2015:
-      return `build/node_modules/${packageName}/cjs/${filename}`;
+      return `build/weiyi/${packageName}/cjs/${filename}`;
     case NODE_ESM:
-      return `build/node_modules/${packageName}/esm/${filename}`;
+      return `build/weiyi/${packageName}/esm/${filename}`;
     case NODE_DEV:
     case NODE_PROD:
     case NODE_PROFILING:
-      return `build/node_modules/${packageName}/cjs/${filename}`;
+      return `build/weiyi/${packageName}/cjs/${filename}`;
     case UMD_DEV:
     case UMD_PROD:
     case UMD_PROFILING:
-      return `build/node_modules/${packageName}/umd/${filename}`;
+      return `build/weiyi/${packageName}/umd/${filename}`;
     case FB_WWW_DEV:
     case FB_WWW_PROD:
     case FB_WWW_PROFILING:
@@ -122,7 +122,7 @@ function getTarOptions(tgzName, packageName) {
   const CONTENTS_FOLDER = 'package';
   return {
     src: tgzName,
-    dest: `build/node_modules/${packageName}`,
+    dest: `build/weiyi/${packageName}`,
     tar: {
       entries: [CONTENTS_FOLDER],
       map(header) {
@@ -149,7 +149,7 @@ for (const bundle of Bundles.bundles) {
 
 function filterOutEntrypoints(name) {
   // Remove entry point files that are not built in this configuration.
-  let jsonPath = `build/node_modules/${name}/package.json`;
+  let jsonPath = `build/weiyi/${name}/package.json`;
   let packageJSON = JSON.parse(readFileSync(jsonPath));
   let files = packageJSON.files;
   let exportsJSON = packageJSON.exports;
@@ -179,7 +179,7 @@ function filterOutEntrypoints(name) {
       // Let's remove it.
       files.splice(i, 1);
       i--;
-      unlinkSync(`build/node_modules/${name}/${filename}`);
+      unlinkSync(`build/weiyi/${name}/${filename}`);
       changed = true;
       // Remove it from the exports field too if it exists.
       if (exportsJSON) {
@@ -208,32 +208,32 @@ function filterOutEntrypoints(name) {
 
 async function prepareNpmPackage(name) {
   await Promise.all([
-    asyncCopyTo('LICENSE', `build/node_modules/${name}/LICENSE`),
+    asyncCopyTo('LICENSE', `build/weiyi/${name}/LICENSE`),
     asyncCopyTo(
       `packages/${name}/package.json`,
-      `build/node_modules/${name}/package.json`
+      `build/weiyi/${name}/package.json`
     ),
     asyncCopyTo(
       `packages/${name}/README.md`,
-      `build/node_modules/${name}/README.md`
+      `build/weiyi/${name}/README.md`
     ),
-    asyncCopyTo(`packages/${name}/npm`, `build/node_modules/${name}`),
+    asyncCopyTo(`packages/${name}/npm`, `build/weiyi/${name}`),
   ]);
   filterOutEntrypoints(name);
   const tgzName = (
-    await asyncExecuteCommand(`npm pack build/node_modules/${name}`)
+    await asyncExecuteCommand(`npm pack build/weiyi/${name}`)
   ).trim();
-  await asyncRimRaf(`build/node_modules/${name}`);
+  await asyncRimRaf(`build/weiyi/${name}`);
   await asyncExtractTar(getTarOptions(tgzName, name));
   unlinkSync(tgzName);
 }
 
 async function prepareNpmPackages() {
-  if (!existsSync('build/node_modules')) {
+  if (!existsSync('build/weiyi')) {
     // We didn't build any npm packages.
     return;
   }
-  const builtPackageFolders = readdirSync('build/node_modules').filter(
+  const builtPackageFolders = readdirSync('build/weiyi').filter(
     dir => dir.charAt(0) !== '.'
   );
   await Promise.all(builtPackageFolders.map(prepareNpmPackage));
