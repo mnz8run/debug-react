@@ -2,6 +2,8 @@
 
 ## 启动
 
+react 执行 yarn
+
 pnpm i
 
 pnpm dev
