@@ -2,6 +2,7 @@
   "name": "debug-react",
   "private": true,
   "scripts": {
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "dev": "pnpm -F debug dev"
   }
 }
